@@ -12,7 +12,7 @@ Borichan is a little desktop pet who gets sad (and eventually dies) if you don't
 -  Built with Electron so it lives on your desktop
 
 ## How to run
-npm install
+npm install  
 npm start
 
 ## Built with
