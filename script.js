@@ -23,7 +23,7 @@ function attachButtonListeners() {
 
     noButton.addEventListener('click', () => {
       document.querySelector('.question').innerHTML = 'Omg go clean girl';
-      document.querySelector('.button-container') = '';
+      document.querySelector('.button-container').innerHTML = '';
     });
   }
 }
