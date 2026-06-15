@@ -30,11 +30,20 @@ function attachButtonListeners() {
 
 
 document.querySelector('.new-log').addEventListener('click', () => {
+  setMood(); 
+  
+  const lastDayCleanedArray = JSON.parse(localStorage.getItem('cleanedList')) || [];
+  const lastTimestamp = lastDayCleanedArray.at(-1);
+  const hoursSinceCleaning = lastTimestamp ? dayjs().diff(dayjs(lastTimestamp), 'hour') : 0;
 
-  document.querySelector('.question').innerHTML = 'Did you clean today?';
-  document.querySelector('.button-container').innerHTML = '<button class="yes-button">Yes!</button><button class="no-button">No</button>';
-
-  attachButtonListeners();
+  if (hoursSinceCleaning < 60) {
+    document.querySelector('.question').innerHTML = 'Did you clean today?';
+    document.querySelector('.button-container').innerHTML = '<button class="yes-button">Yes!</button><button class="no-button">No</button>';
+    attachButtonListeners();
+  } else {
+    document.querySelector('.question').innerHTML = 'It is too late. Borichan is gone. ';
+    document.querySelector('.button-container').innerHTML = ''; 
+  }
 });
 
 
@@ -88,10 +97,10 @@ function setMood(){
     const hoursSinceCleaning = dayjs(today).diff(dayjs(lastTimestamp), 'hour');
     if (hoursSinceCleaning >= 60) {
     document.querySelector('.facial-expression').innerHTML = '<img src="images/dead.png" class="emotion">';
-    document.querySelector('.question').innerHTML = 'Oh no... your Tamagotchi died because it was too dirty. ';
+    document.querySelector('.question').innerHTML = 'Oh no... your Tamagotchi died. ';
   } 
   else if (hoursSinceCleaning >= 24) {
-    document.querySelector('.question').innerHTML = 'Your Tamagotchi is looking a super dirty... Did you clean today?';
+    document.querySelector('.question').innerHTML = 'Your Tamagotchi is looking a super dirty.';
     document.querySelector('.facial-expression').innerHTML = '<img src="images/eye.png" class="eye"><img src="images/sad.png" class="emotion">';
   } 
   else {
