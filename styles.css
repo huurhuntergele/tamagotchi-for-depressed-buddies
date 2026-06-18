@@ -126,6 +126,7 @@ body {
   position: absolute;
   top: 60px;
   width: 350px;
+  image-rendering: pixelated;
 }
 
 .tamagotchi.jumping {
