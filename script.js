@@ -1,10 +1,13 @@
 import dayjs from 'https://unpkg.com/supersimpledev@8.5.0/dayjs/esm/index.js';
 
 let cleanedList = JSON.parse(localStorage.getItem('cleanedList')) || [];
-if (cleanedList.length > 0) {
-  document.querySelector(".last-cleaned-day").innerHTML = `Last time, you cleaned on ${dayjs(cleanedList.at(-1)).format('dddd, MMMM DD, HH:mm')}`;
-}
+cleanedList.length > 0 && updateLastCleanedDayText();
 const tamagotchi = document.querySelector('.tamagotchi');
+
+function updateLastCleanedDayText(){
+  document.querySelector(".last-cleaned-day").innerHTML =
+  `Last time, you cleaned on ${dayjs(cleanedList.at(-1)).format('dddd, MMMM DD, HH:mm')}`;
+}
 
 function attachButtonListeners() {
   const yesButton = document.querySelector('.yes-button');
@@ -17,7 +20,7 @@ function attachButtonListeners() {
       document.querySelector('.button-container').innerHTML = '';
       cleanedList.push(today);
       localStorage.setItem('cleanedList', JSON.stringify(cleanedList));
-      document.querySelector('.last-cleaned-day').innerHTML = `Last time, you cleaned on ${dayjs(cleanedList.at(-1)).format('dddd, MMMM DD, HH:mm')}`;
+      updateLastCleanedDayText();
       setMood();
     });
 
@@ -32,8 +35,7 @@ function attachButtonListeners() {
 document.querySelector('.new-log').addEventListener('click', () => {
   setMood(); 
   
-  const lastDayCleanedArray = JSON.parse(localStorage.getItem('cleanedList')) || [];
-  const lastTimestamp = lastDayCleanedArray.at(-1);
+  const lastTimestamp = cleanedList.at(-1);
   const hoursSinceCleaning = lastTimestamp ? dayjs().diff(dayjs(lastTimestamp), 'hour') : 0;
 
   if (hoursSinceCleaning < 60) {
@@ -47,54 +49,42 @@ document.querySelector('.new-log').addEventListener('click', () => {
 });
 
 
-let buttonToggle1 = false;
-let buttonToggle2 = false;
-let buttonToggle3 = false;
-let buttonToggle4 = false;
+const buttonToggles = [{
+  state: false,
+  className: '.clothes',
+  image: 'images/clothes.png' 
+},{
+  state: false,
+  className: '.headphone',
+  image: 'images/headphone.png'
+},{
+  state: false,
+  className: '.eyeglass',
+  image: 'images/eyeglass.png'
+},{
+  state: false,
+  className: '.heart',
+  image: 'images/heart.png'
+}];
 
-const myDiv = document.querySelector('.tamagotchi')
-
-document.querySelector('.button-1').addEventListener('click', ()=>{
-  buttonToggle1 = !buttonToggle1;
-  const element = document.querySelector('.button-1');
-  element.classList.toggle('clicked-button-1')
-  buttonToggle1 && myDiv.insertAdjacentHTML("beforeend", " <img src='images/clothes.png' alt='' class='clothes'>");
-  !buttonToggle1 && document.querySelector('.clothes').remove() 
+buttonToggles.forEach((button, index)=>{
+  document.querySelector(`.button-${index+1}`).addEventListener('click', ()=>{
+  button.state = !button.state;
+  const element = document.querySelector(`.button-${index+1}`);
+  element.classList.toggle(`clicked-button-${index+1}`)
+  const image = `<img src="${button.image}" alt='' class= "${button.className.replace('.','')}">`
+  button.state && tamagotchi.insertAdjacentHTML("beforeend", image);
+  !button.state && document.querySelector(button.className)?.remove() 
+})
 })
 
-document.querySelector('.button-2').addEventListener('click', ()=>{
-  buttonToggle2 = !buttonToggle2;
-  const element = document.querySelector('.button-2');
-  element.classList.toggle('clicked-button-2')
-  buttonToggle2 && myDiv.insertAdjacentHTML("beforeend", " <img src='images/headphone.png' alt='' class='headphone'>");
-  !buttonToggle2 && document.querySelector('.headphone').remove();
-})
 
-document.querySelector('.button-3').addEventListener('click', ()=>{
-  buttonToggle3 = !buttonToggle3;
-  const element = document.querySelector('.button-3');
-  element.classList.toggle('clicked-button-3')
-  buttonToggle3  && myDiv.insertAdjacentHTML("beforeend", " <img src='images/eyeglass.png' alt='' class='eyeglass'>");
-  !buttonToggle3 && document.querySelector('.eyeglass').remove();
-})
-
-document.querySelector('.button-4').addEventListener('click', ()=>{
-  buttonToggle4 = !buttonToggle4;
-  const element = document.querySelector('.button-4');
-  element.classList.toggle('clicked-button-4')
-  buttonToggle4  && myDiv.insertAdjacentHTML("beforeend", " <img src='images/heart.png' alt='' class='heart'>");
-  !buttonToggle4 && document.querySelector('.heart').remove();
-})
 
 
 function setMood(){
-  const today = dayjs(); 
-  const lastDayCleanedArray = JSON.parse(localStorage.getItem('cleanedList')) || [];
-
-
-  if(lastDayCleanedArray.length>0){
-    const lastTimestamp = lastDayCleanedArray[lastDayCleanedArray.length - 1];
-    const hoursSinceCleaning = dayjs(today).diff(dayjs(lastTimestamp), 'hour');
+  if(cleanedList.length>0){
+    const lastTimestamp = cleanedList[cleanedList.length - 1];
+    const hoursSinceCleaning = dayjs().diff(dayjs(lastTimestamp), 'hour');
     if (hoursSinceCleaning >= 60) {
     document.querySelector('.facial-expression').innerHTML = '<img src="images/dead.png" class="emotion">';
     document.querySelector('.question').innerHTML = 'Oh no... your Tamagotchi died. ';
