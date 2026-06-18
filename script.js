@@ -17,36 +17,40 @@ function attachButtonListeners() {
     yesButton.addEventListener('click', () => {
       const today = dayjs().format();
       document.querySelector('.question').innerHTML = 'Good job!';
-      document.querySelector('.button-container').innerHTML = '';
+      document.querySelector('.button-container').innerHTML = '<button class="new-log">new log</button>';
       cleanedList.push(today);
       localStorage.setItem('cleanedList', JSON.stringify(cleanedList));
       updateLastCleanedDayText();
       setMood();
+      newLogListener();
     });
 
     noButton.addEventListener('click', () => {
       document.querySelector('.question').innerHTML = 'Omg go clean girl';
-      document.querySelector('.button-container').innerHTML = '';
+      document.querySelector('.button-container').innerHTML = '<button class="new-log">new log</button>';
+      newLogListener();
     });
   }
 }
 
+function newLogListener(){
+    document.querySelector('.new-log').addEventListener('click', () => {
+    setMood(); 
+    
+    const lastTimestamp = cleanedList.at(-1);
+    const hoursSinceCleaning = lastTimestamp ? dayjs().diff(dayjs(lastTimestamp), 'hour') : 0;
 
-document.querySelector('.new-log').addEventListener('click', () => {
-  setMood(); 
-  
-  const lastTimestamp = cleanedList.at(-1);
-  const hoursSinceCleaning = lastTimestamp ? dayjs().diff(dayjs(lastTimestamp), 'hour') : 0;
+    if (hoursSinceCleaning < 60) {
+      document.querySelector('.question').innerHTML = 'Did you clean today?';
+      document.querySelector('.button-container').innerHTML = '<button class="yes-button">Yes!</button><button class="no-button">No</button>';
+      attachButtonListeners();
+    } else {
+      document.querySelector('.question').innerHTML = 'It is too late. Borichan is gone. ';
+      document.querySelector('.button-container').innerHTML = ''; 
+    }
+  });
+}
 
-  if (hoursSinceCleaning < 60) {
-    document.querySelector('.question').innerHTML = 'Did you clean today?';
-    document.querySelector('.button-container').innerHTML = '<button class="yes-button">Yes!</button><button class="no-button">No</button>';
-    attachButtonListeners();
-  } else {
-    document.querySelector('.question').innerHTML = 'It is too late. Borichan is gone. ';
-    document.querySelector('.button-container').innerHTML = ''; 
-  }
-});
 
 
 const buttonToggles = [{
@@ -101,4 +105,5 @@ function setMood(){
 
 }
 
+newLogListener();
 setMood();
