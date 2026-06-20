@@ -5,6 +5,7 @@ A desktop Tamagotchi that will make you clean your room!
 
 ## What it does
 Borichan is a little desktop pet who gets sad (and eventually dies) if you don't clean your room. Log your cleaning habits and keep Borichan happy!
+https://github.com/user-attachments/assets/39dad07e-9585-47ba-9b48-95e27b8db3f4
 ## Features
 -  Track when you last cleaned your room
 -  Borichan gets happy, sad, or dies based on how long since you cleaned
